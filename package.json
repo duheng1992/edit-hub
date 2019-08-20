@@ -1,6 +1,6 @@
 {
-  "name": "electron-app1",
-  "productName": "electron-app1",
+  "name": "edit-hub",
+  "productName": "edit-hub编辑器",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": "src/index.js",

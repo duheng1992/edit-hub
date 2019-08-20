@@ -29,6 +29,9 @@ const createWindow = () => {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+
+  // 定义菜单
+  require('./main/ipcMain');
 };
 
 // This method will be called when Electron has finished
