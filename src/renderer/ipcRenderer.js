@@ -37,22 +37,18 @@ ipcRenderer.on('action', function(e, action){
                 document.title = '新建文档';
                 setCurrentFilePath();
             });
-
             break;
         case 'open':
             saveGuard(open);
-            
             break;
         case 'save':
             save(function(){});    
-
             break;
         case 'quit':
             saveGuard(function(){
                 // 通知主进程退出
                 ipcRenderer.send('confirmQuit');
             });
-
             break;
     }
 });
