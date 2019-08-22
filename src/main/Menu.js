@@ -1,37 +1,43 @@
-
+const { BrowserWindow } = require('electron');
 export const template = [
     {
-        label: '文件',
+        label: '文件111',
         submenu: [
             {
                 label: '新建',
                 click: function(){
-
+                    BrowserWindow.getFocusedWindow().webContents.send('action', 'new');
                 }
             },
             {
                 label: '打开',
+                accelerator: 'Command+O',
                 click: function(){
-
+                    // 主进程通知渲染进程
+                    BrowserWindow.getFocusedWindow().webContents.send('action', 'open');
                 }
             },
             {
                 label: '保存',
+                accelerator: 'Command+S',
                 click: function(){
-
+                    BrowserWindow.getFocusedWindow().webContents.send('action', 'save');
                 }
             },
             { type: 'separator' },
             {
                 label: '打印',
+                accelerator: 'Command+P',
                 click: function(){
-
+                    BrowserWindow.getFocusedWindow().webContents.print();
                 }
             },
             {
                 label: '退出',
+                accelerator: 'Command+Q',
                 click: function(){
-
+                    // 提示渲染进程保存文件
+                    BrowserWindow.getFocusedWindow().webContents.send('action', 'quit');
                 }
             }
         ]
@@ -73,11 +79,11 @@ export const template = [
         label: '视图',
         submenu: [
             {
-                label: '缩小',
+                label: '放大',
                 role: 'zoomin'
             },
             {
-                label: '放大',
+                label: '缩小',
                 role: 'zoomout'
             },
             {
@@ -88,6 +94,10 @@ export const template = [
             {
                 label: '全屏',
                 role: 'togglefullscreen'
+            },
+            {
+                label: '刷新',
+                role: 'reload'
             }
         ]
     },
@@ -96,7 +106,7 @@ export const template = [
         submenu: [
             {
                 label: '关于',
-                click: function() {
+                click: async function() {
                     // shell.openExternal('');
                 }
             },
