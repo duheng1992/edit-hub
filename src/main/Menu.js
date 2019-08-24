@@ -1,7 +1,7 @@
 const { BrowserWindow, shell } = require('electron');
 export const template = [
     {
-        label: '文件111',
+        label: '文件',
         submenu: [
             {
                 label: '新建',
@@ -95,10 +95,6 @@ export const template = [
                 label: '全屏',
                 role: 'togglefullscreen'
             },
-            {
-                label: '刷新',
-                role: 'reload'
-            }
         ]
     },
     {
@@ -143,5 +139,13 @@ export const contextMenuTemplate = [
     {
         label: '全选',
         role: 'selectAll'
+    }
+]
+
+// 系统托盘的菜单
+export const tpl = [
+    {
+        label: '刷新',
+        role: 'reload'
     }
 ]
