@@ -3,13 +3,47 @@ const fs = require('fs');
 const dialog = remote.dialog;
 const bw = remote.BrowserWindow;
 
-let contentDOM = document.querySelector('#content');
+// let contentDOM = document.querySelector('#content');
 let COMMON = {
     isSaved: true,
     currentFIlePath: null,
 }
 
 const savedFlag = '*';
+
+// 如何设置支持多种语言？？这个默认通过文件名后缀判断
+const mixedMode = {
+    name: 'htmlmixed',
+    scriptTypes: [
+        {matches: /\/x-handlebars-template|\/x-mustache/i, mode: null},
+        {matches: /(text|application)\/(x-)?vb(a|script)/i, mode: 'vbscript'},
+    ]
+}
+
+const langMode = {
+    'java': 'x-java',
+    'html': mixedMode,
+    'js': 'text/javascript',
+    'c': 'text/x-csrc',
+    'cpp': 'text/x-c++src"',
+    'scala': 'text/x-scala',
+}
+
+function getSuffix(dir){
+    if(dir){
+        let index1 = dir.lastIndexOf(".");
+        let index2 = dir.length;
+        return dir.substring(index1 + 1, index2);  //后缀名
+    } else {
+        return false;
+    }
+}
+
+let editor = CodeMirror.fromTextArea(document.getElementById('content'), {
+    mode: mixedMode,
+    lineNumbers: true,
+    theme: 'paraiso-dark'
+});
 
 document.title = '新建文档';
 
@@ -19,12 +53,12 @@ document.addEventListener('contextmenu', function(e) {
     ipcRenderer.send('contextMenu');
 })
 
-contentDOM.oninput = function(){
+editor.on("change", function (Editor, changes) {
     if(COMMON.isSaved){
         COMMON.isSaved = false;
-        document.title += ' *';
+        document.title += (' ' + savedFlag);
     }
-}
+});
 
 // 接收主进程传入的动作
 ipcRenderer.on('action', function(e, action){
@@ -33,7 +67,7 @@ ipcRenderer.on('action', function(e, action){
         case 'new':
             // 判断文件是否保存
             saveGuard(function(){
-                contentDOM.value = '';
+                setDomValue('');
                 document.title = '新建文档';
                 setCurrentFilePath();
             });
@@ -75,6 +109,14 @@ function setCurrentFilePath(path) {
     }
 }
 
+function setDomValue(data) {
+    editor.setValue(data);
+}
+
+function getDomValue() {
+    return editor.getValue();
+}
+
 function saveGuard(fn){
     if(!getIsSaved()) {
         dialog.showMessageBox(bw.getFocusedWindow(), {
@@ -103,7 +145,7 @@ function save(fn) {
             ]
         }, function(dir){
             if(dir) { 
-                fs.writeFile(dir, contentDOM.value, function(err){
+                fs.writeFile(dir, getDomValue(), function(err){
                     if(!err){
                         setIsSaved(true);
                         setCurrentFilePath(dir);
@@ -114,7 +156,7 @@ function save(fn) {
         });
     } else {
         // 当前保存目录存在
-        fs.writeFile(COMMON.currentFIlePath, contentDOM.value, function(err){
+        fs.writeFile(COMMON.currentFIlePath, getDomValue(), function(err){
             if(!err){
                 setIsSaved(true);
                 fn();
@@ -132,9 +174,9 @@ function open() {
         if(dir && dir.length){
             fs.readFile(dir[0], function(err, data){
                 if(!err){
-                  contentDOM.value = data;
-                  setCurrentFilePath(dir[0]);
-                  setIsSaved(true);
+                    setDomValue(data);
+                    setCurrentFilePath(dir[0]);
+                    setIsSaved(true);
                 } else {
                     dialog.showErrorBox('出错了', '读取文件失败！');
                 }

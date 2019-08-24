@@ -13,6 +13,5 @@ ipcMain.on('contextMenu', function() {
 });
 
 ipcMain.on('confirmQuit', function() {
-    console.log('2323')
     app.quit();
 });

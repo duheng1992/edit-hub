@@ -1,4 +1,4 @@
-const { BrowserWindow } = require('electron');
+const { BrowserWindow, shell } = require('electron');
 export const template = [
     {
         label: '文件111',
@@ -12,7 +12,7 @@ export const template = [
             {
                 label: '打开',
                 accelerator: 'Command+O',
-                click: function(){
+                click: function(){ 
                     // 主进程通知渲染进程
                     BrowserWindow.getFocusedWindow().webContents.send('action', 'open');
                 }
@@ -106,8 +106,8 @@ export const template = [
         submenu: [
             {
                 label: '关于',
-                click: async function() {
-                    // shell.openExternal('');
+                click: function() {
+                    shell.openExternal('http://122.112.216.70:1818/');
                 }
             },
         ]

@@ -2,7 +2,7 @@
   "name": "edit-hub",
   "productName": "edit-hub编辑器",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "my code editor",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
